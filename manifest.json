@@ -1,0 +1,63 @@
+{
+  "manifest_version": 3, 
+  "name": "Search Blocker",
+  "version": "1.0",
+  "description": "阻止自定义网站进入搜索结果的浏览器扩展。",
+  "icons": {
+    "48": "icon-48.png",
+    "96": "icon-96.png"
+  },
+  "action": { // 将 browser_action 改为 action
+    "default_icon": {
+      "19": "icon-19.png",
+      "38": "icon-38.png"
+    },
+    "default_title": "Search Blocker",
+    "default_popup": "options.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.bing.com/*", "*://*.google.com/*", "*://*.baidu.com/*"],
+      "resources": ["content.js"] // 将 js 改为 resources，并指向一个 js 文件数组
+    }
+  ],
+  "permissions": [
+    // 添加 declarativeNetRequest 权限，并指定一个最小版本号为 88
+    {
+      "declarativeNetRequest": {
+        "min_manifest_version": 88
+      }
+    },
+    // 添加 storage 权限
+    "storage"
+  ],
+  // 添加 declarativeNetRequest 规则文件
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        // 指定一个 json 文件，用于定义规则
+        // 规则的作用是屏蔽搜索结果中的自定义网站
+        // 规则的格式参考 https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/#type-Rule
+        // 这里假设有一个名为 rules.json 的文件，其中包含了规则的定义
+        // 这个文件需要和 manifest.json 在同一个目录下
+        // 这个文件的内容需要根据用户设置的网站列表动态生成
+        // 这里只是给出一个示例，其中包含了两条规则，分别屏蔽了 example.com 和 example.net
+        "path": "rules.json"
+      }
+    ]
+  },
+  // 将 background 改为一个数组，其中包含一个名为 service_worker 的属性，指向一个 js 文件，用于替换原来的后台页
+  "background": [
+    {
+      "service_worker": "background.js"
+    }
+  ],
+  // 将 web_accessible_resources 改为一个对象，其中包含一个名为 resources 的属性，指向一个资源文件数组
+  "web_accessible_resources": {
+    "resources": [
+      "pp.jpg"
+    ]
+  }
+}

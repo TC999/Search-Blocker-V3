@@ -1,0 +1,36 @@
+       [
+          {
+            // 规则的 ID，必须是唯一的正整数
+            "id": 1,
+            // 规则的优先级，必须是正整数，数字越大优先级越高
+            "priority": 1,
+            // 规则的条件，必须包含一个资源类型和一个 URL 过滤器
+            // 资源类型指定了规则适用于哪些类型的请求，这里使用 main_frame 表示主框架请求，即网页本身的请求
+            // URL 过滤器指定了规则适用于哪些 URL，这里使用 ||example.com 表示以 example.com 结尾的主机名，参考 https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/#url_filter_syntax
+            "condition": {
+              "resourceTypes": ["main_frame"],
+              "urlFilter": "||example.com"
+            },
+            // 规则的操作，指定了当条件满足时执行的操作，这里使用 block 表示阻止请求
+            "action": {
+              "type": "block"
+            }
+          },
+          {
+            // 另一条规则，作用是屏蔽 example.net
+            "id": 2,
+            "priority": 2,
+            "condition": {
+              "resourceTypes": ["main_frame"],
+              "urlFilter": "||example.net"
+            },
+            "action": {
+              "type": "block"
+            }
+          }
+        ]
+		// 在 manifest.json 中引用 rules.json 文件
+        // 注意：rules.json 文件中最多只能有 300 条规则
+        // 如果用户设置的网站列表超过了这个限制，需要分成多个文件，并在 manifest.json 中引用它们
+        // 参考 https://developer.chrome.com/docs/extensions/reference/declarativeNetRequest/#property-static_ruleset_ids
+        // 这里假设用户设置的网站列表没有超过 300 个，所以只用了一个文件
